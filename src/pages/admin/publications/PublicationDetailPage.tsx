@@ -6,7 +6,6 @@ import {
   approvePublicationRequest,
   rejectPublicationRequest,
 } from '../../../api/publicationsApi';
-import { getFeatureFlags, type FeatureFlags } from '../../../api/featureFlagsApi';
 import type {
   PublicationRequestDetail,
   PublicationRequestStatus,
@@ -49,7 +48,7 @@ export default function PublicationDetailPage() {
   const navigate = useNavigate();
 
   const [detail, setDetail] = useState<PublicationRequestDetail | null>(null);
-  const [flags, setFlags] = useState<FeatureFlags>({ showOwnerContact: true, showExpectedPrice: true });
+  const flags = { showOwnerContact: true, showExpectedPrice: true };
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -68,12 +67,10 @@ export default function PublicationDetailPage() {
     setIsLoading(true);
     setError(null);
     try {
-      const [data, featureFlags] = await Promise.all([
-        getPublicationRequestDetail(id),
-        getFeatureFlags(),
-      ]);
+      
+      const data = await getPublicationRequestDetail(id);
       setDetail(data);
-      setFlags(featureFlags);
+    
     } catch {
       setError('No se pudo cargar el detalle de la solicitud.');
     } finally {
